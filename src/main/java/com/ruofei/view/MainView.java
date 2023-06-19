@@ -62,6 +62,7 @@ public class MainView extends VerticalLayout {
     private Button downloadBtn = new Button("Download", VaadinIcon.DOWNLOAD.create());
     private Button encodeBtn = new Button("Encode", VaadinIcon.AIRPLANE.create());
     private Button refreshBtn = new Button("Refresh", VaadinIcon.REFRESH.create());
+    private Button OperatorBtn = new Button("view", VaadinIcon.REFRESH.create());
     private HorizontalLayout toolBar = new HorizontalLayout(filter, addNewBtn);
     private Div message = createMessageDiv("tes");
     private HorizontalLayout dateBar = new HorizontalLayout(message);
@@ -98,9 +99,10 @@ public class MainView extends VerticalLayout {
         grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
         grid.getColumnByKey("presetName").setWidth("350px").setFlexGrow(0);
 
-        downloadedVideoFilesGrid.setColumns("fileName", "downloadProgress", "fileSize");
-        downloadedVideoFilesGrid.getColumnByKey("downloadProgress").setWidth("350px").setFlexGrow(0);
+        downloadedVideoFilesGrid.setColumns("fileName", "downloadProgress", "fileSize","operator");
+        downloadedVideoFilesGrid.getColumnByKey("downloadProgress").setWidth("150px").setFlexGrow(0);
         downloadedVideoFilesGrid.getColumnByKey("fileSize").setWidth("150px").setFlexGrow(0);
+        downloadedVideoFilesGrid.getColumnByKey("operator").setWidth("150px").setFlexGrow(0);
 
         addNewBtn.addClickListener(e -> editor.editPreset(new VideoEncoderPreset()));
 
@@ -203,6 +205,7 @@ public class MainView extends VerticalLayout {
                 DownloadedVideoFile item = new DownloadedVideoFile();
                 item.setFileName(file.toFile().getAbsolutePath());
                 item.setFileSize(FileUtil.humanReadableByteCount(file.toFile().length()));
+                item.setOperator(OperatorBtn);
                 items.add(item);
             });
         } catch (IOException e) {

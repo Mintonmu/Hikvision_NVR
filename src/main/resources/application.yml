@@ -1,5 +1,4 @@
 nvr.home: ${user.home}/nvr
-
 spring:
   h2:
     console:
@@ -32,3 +31,5 @@ spring:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+server:
+  port: 9999
