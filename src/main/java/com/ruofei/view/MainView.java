@@ -73,7 +73,7 @@ public class MainView extends VerticalLayout {
     private HorizontalLayout downloadParamsBar = new HorizontalLayout(nvrIpAddress, channel, startDateTime, endDateTime);
     private HorizontalLayout systemInfoBar = new HorizontalLayout(diskSpace);
     ComboBox<String> comboBox = new ComboBox<>("Type");
-    private HorizontalLayout downloadBar = new HorizontalLayout(comboBox, downloadBtn);
+    private HorizontalLayout downloadBar = new HorizontalLayout(comboBox, downloadBtn, OperatorBtn);
     private VerticalLayout downloadVideoLayout = new VerticalLayout(systemInfoBar, downloadParamsBar, dateBar, downloadBar, encodeBtn, refreshBtn, downloadedVideoFilesGrid);
     private DownloadFileProgressListener progressListener;
     private Timer autoUpdateInfoOnPage = new Timer();
@@ -99,7 +99,7 @@ public class MainView extends VerticalLayout {
         grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
         grid.getColumnByKey("presetName").setWidth("350px").setFlexGrow(0);
 
-        downloadedVideoFilesGrid.setColumns("fileName", "downloadProgress", "fileSize","operator");
+        downloadedVideoFilesGrid.setColumns("fileName", "downloadProgress", "fileSize", "operator");
         downloadedVideoFilesGrid.getColumnByKey("downloadProgress").setWidth("150px").setFlexGrow(0);
         downloadedVideoFilesGrid.getColumnByKey("fileSize").setWidth("150px").setFlexGrow(0);
         downloadedVideoFilesGrid.getColumnByKey("operator").setWidth("150px").setFlexGrow(0);
@@ -108,18 +108,18 @@ public class MainView extends VerticalLayout {
 
         downloadBtn.addClickListener(e -> {
             CompletableFuture.runAsync(() -> downloadService.download(nvrIpAddress
-                    .getValue(),
-                channel.getValue(),
-                startDateTime.getValue(),
-                endDateTime.getValue(),
-                progressListener));
+                            .getValue(),
+                    channel.getValue(),
+                    startDateTime.getValue(),
+                    endDateTime.getValue(),
+                    progressListener));
         });
 
         encodeBtn.addClickListener(e -> {
             CompletableFuture.runAsync(() -> encodeService
                     .encode(nvrIpAddress.getValue(), channel.getValue(), startDateTime.getValue(), endDateTime.getValue()));
         });
-        
+
         refreshBtn.addClickListener(e -> {
             filesList();
         });
@@ -131,7 +131,7 @@ public class MainView extends VerticalLayout {
 
         listPresets();
         message.setVisible(true);
-        
+
         comboBox.setItems("From selected channel", "From all channels");
         comboBox.setValue("From selected channel");
         comboBox.setWidth("250px");
@@ -205,7 +205,7 @@ public class MainView extends VerticalLayout {
                 DownloadedVideoFile item = new DownloadedVideoFile();
                 item.setFileName(file.toFile().getAbsolutePath());
                 item.setFileSize(FileUtil.humanReadableByteCount(file.toFile().length()));
-                item.setOperator(OperatorBtn);
+//                item.setOperator(OperatorBtn);
                 items.add(item);
             });
         } catch (IOException e) {
