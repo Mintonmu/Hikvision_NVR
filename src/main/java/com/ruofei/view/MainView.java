@@ -14,6 +14,10 @@ import java.util.concurrent.CompletableFuture;
 import com.ruofei.domain.DownloadedVideoFile;
 import com.ruofei.repo.VideoEncoderPresetRepository;
 import com.ruofei.util.FileUtil;
+import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.grid.ItemClickEvent;
+import com.vaadin.flow.component.grid.editor.Editor;
+import com.vaadin.flow.component.treegrid.TreeGrid;
 import org.springframework.util.StringUtils;
 
 import com.ruofei.components.VideoDownloader;
@@ -52,8 +56,8 @@ public class MainView extends VerticalLayout {
     private VideoEncoderPresetRepository videoEncoderPresetRepository;
     private Grid<VideoEncoderPreset> grid = new Grid<>(VideoEncoderPreset.class);
     private Grid<DownloadedVideoFile> downloadedVideoFilesGrid = new Grid<>(DownloadedVideoFile.class);
-    private final VideoPresetEditor editor;
-    private final VideoDownloader videoDownloader;
+    private VideoPresetEditor editor;
+    private VideoDownloader videoDownloader;
     private DownloadService downloadService;
 
     private TextField filter = new TextField("", "Type to filter");
@@ -62,7 +66,6 @@ public class MainView extends VerticalLayout {
     private Button downloadBtn = new Button("Download", VaadinIcon.DOWNLOAD.create());
     private Button encodeBtn = new Button("Encode", VaadinIcon.AIRPLANE.create());
     private Button refreshBtn = new Button("Refresh", VaadinIcon.REFRESH.create());
-    private Button OperatorBtn = new Button("view", VaadinIcon.REFRESH.create());
     private HorizontalLayout toolBar = new HorizontalLayout(filter, addNewBtn);
     private Div message = createMessageDiv("tes");
     private HorizontalLayout dateBar = new HorizontalLayout(message);
@@ -73,10 +76,11 @@ public class MainView extends VerticalLayout {
     private HorizontalLayout downloadParamsBar = new HorizontalLayout(nvrIpAddress, channel, startDateTime, endDateTime);
     private HorizontalLayout systemInfoBar = new HorizontalLayout(diskSpace);
     ComboBox<String> comboBox = new ComboBox<>("Type");
-    private HorizontalLayout downloadBar = new HorizontalLayout(comboBox, downloadBtn, OperatorBtn);
+    private HorizontalLayout downloadBar = new HorizontalLayout(comboBox, downloadBtn);
     private VerticalLayout downloadVideoLayout = new VerticalLayout(systemInfoBar, downloadParamsBar, dateBar, downloadBar, encodeBtn, refreshBtn, downloadedVideoFilesGrid);
     private DownloadFileProgressListener progressListener;
     private Timer autoUpdateInfoOnPage = new Timer();
+    Editor<DownloadedVideoFile> DownloadedVideoFileeditor = downloadedVideoFilesGrid.getEditor();
 
     public MainView(DownloadService downloadService, EncodeService encodeService, VideoEncoderPresetRepository videoEncoderPresetRepository, VideoPresetEditor editor, VideoDownloader videoDownloader) {
         File dir = new File(FileUtil.nvrHomeDir());
@@ -99,11 +103,41 @@ public class MainView extends VerticalLayout {
         grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
         grid.getColumnByKey("presetName").setWidth("350px").setFlexGrow(0);
 
-        downloadedVideoFilesGrid.setColumns("fileName", "downloadProgress", "fileSize", "operator");
-        downloadedVideoFilesGrid.getColumnByKey("downloadProgress").setWidth("150px").setFlexGrow(0);
-        downloadedVideoFilesGrid.getColumnByKey("fileSize").setWidth("150px").setFlexGrow(0);
-        downloadedVideoFilesGrid.getColumnByKey("operator").setWidth("150px").setFlexGrow(0);
+        downloadedVideoFilesGrid.setColumns("fileName","fileSize");
+        downloadedVideoFilesGrid.addComponentColumn(p -> {
+            Button frontbtn = new Button("前");
+            frontbtn.addClickListener(e -> {
+                //TODO:完成按钮响应事件
 
+            });
+            return frontbtn;
+        }).setWidth("150px").setFlexGrow(0);
+        downloadedVideoFilesGrid.addComponentColumn(p -> {
+            Button backbtn = new Button("后");
+            backbtn.addClickListener(e -> {
+                //TODO:完成按钮响应事件
+            });
+            return backbtn;
+        }).setWidth("150px").setFlexGrow(0);
+        downloadedVideoFilesGrid.addComponentColumn(person -> {
+            Button movebtn = new Button("移动");
+            movebtn.addClickListener(e -> {
+                //TODO:完成按钮响应事件
+            });
+            return movebtn;
+        }).setWidth("150px").setFlexGrow(0);
+
+        downloadedVideoFilesGrid.getColumnByKey("fileSize").setWidth("150px").setFlexGrow(0);
+
+        downloadedVideoFilesGrid.addComponentColumn(person -> {
+            Button editButton = new Button("查看");
+            editButton.addClickListener(e -> {
+                if (DownloadedVideoFileeditor.isOpen())
+                    DownloadedVideoFileeditor.cancel();
+                downloadedVideoFilesGrid.getEditor().editItem(person);
+            });
+            return editButton;
+        }).setWidth("150px").setFlexGrow(0);
         addNewBtn.addClickListener(e -> editor.editPreset(new VideoEncoderPreset()));
 
         downloadBtn.addClickListener(e -> {
@@ -205,7 +239,7 @@ public class MainView extends VerticalLayout {
                 DownloadedVideoFile item = new DownloadedVideoFile();
                 item.setFileName(file.toFile().getAbsolutePath());
                 item.setFileSize(FileUtil.humanReadableByteCount(file.toFile().length()));
-//                item.setOperator(OperatorBtn);
+                item.setOperator("查看");
                 items.add(item);
             });
         } catch (IOException e) {
