@@ -1,6 +1,7 @@
 package com.ruofei.view;
 
 import com.ruofei.components.VideoCompoment;
+import com.ruofei.components.VideoDialog;
 import com.ruofei.components.VideoDownloader;
 import com.ruofei.components.VideoPresetEditor;
 import com.ruofei.domain.DownloadedVideoFile;
@@ -134,7 +135,8 @@ public class MainView extends VerticalLayout {
                 video = VideoCompoment.getvideoCompoment();
                 video.setSrc(person.getFileName());
                 video.setMaxWidth("500px");
-                add(video);
+                VideoDialog videoDialog = new VideoDialog(video);
+                add(videoDialog);
             });
 
             return editButton;
