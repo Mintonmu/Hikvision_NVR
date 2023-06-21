@@ -36,7 +36,9 @@ import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Collection;
@@ -107,7 +109,16 @@ public class MainView extends VerticalLayout {
             Button frontbtn = new Button("前");
             frontbtn.addClickListener(e -> {
                 //TODO:完成按钮响应事件
-
+                Video video = new Video();
+                video.setWidth("600px");
+                video.setControls(true);
+                Path path = Paths.get(p.getFileName());
+                // 获取文件名
+                String fileName = path.getFileName().toString();
+                String b = FileUtil.nvrHomeDir()  + "/" + fileName + "/ch-2" + fileName.substring(2)+ ".mp4";
+                video.setSource(Paths.get(b));
+                VideoDialog videoDialog = new VideoDialog(video);
+                add(videoDialog);
             });
             return frontbtn;
         }).setWidth("150px").setFlexGrow(0);
@@ -115,33 +126,53 @@ public class MainView extends VerticalLayout {
             Button backbtn = new Button("后");
             backbtn.addClickListener(e -> {
                 //TODO:完成按钮响应事件
+                Video video = new Video();
+                video.setWidth("600px");
+                video.setControls(true);
+                Path path = Paths.get(p.getFileName());
+                // 获取文件名
+                String fileName = path.getFileName().toString();
+                String b = FileUtil.nvrHomeDir()  + "/" + fileName + "/ch-2" + fileName.substring(2)+ ".mp4";
+                video.setSource(Paths.get(b));
+                VideoDialog videoDialog = new VideoDialog(video);
+                add(videoDialog);
             });
             return backbtn;
         }).setWidth("150px").setFlexGrow(0);
-        downloadedVideoFilesGrid.addComponentColumn(person -> {
+        downloadedVideoFilesGrid.addComponentColumn(p -> {
             Button movebtn = new Button("移动");
             movebtn.addClickListener(e -> {
                 //TODO:完成按钮响应事件
+                Video video = new Video();
+                video.setWidth("600px");
+                video.setControls(true);
+                Path path = Paths.get(p.getFileName());
+                // 获取文件名
+                String fileName = path.getFileName().toString();
+                String b = FileUtil.nvrHomeDir()  + "/" + fileName + "/ch-2" + fileName.substring(2)+ ".mp4";
+                video.setSource(Paths.get(b));
+                VideoDialog videoDialog = new VideoDialog(video);
+                add(videoDialog);
             });
             return movebtn;
         }).setWidth("150px").setFlexGrow(0);
 
         downloadedVideoFilesGrid.getColumnByKey("fileSize").setWidth("150px").setFlexGrow(0);
 
-        downloadedVideoFilesGrid.addComponentColumn(person -> {
-            Button editButton = new Button("查看");
-            editButton.addClickListener(e -> {
-                Video video = new Video();
-                video.setWidth("600px");
-                video.setControls(true);
-                video.setSource(Paths.get(person.getFileName()));
-                VideoDialog videoDialog = new VideoDialog(video);
-                add(videoDialog);
-            });
-
-            return editButton;
-
-        }).setWidth("150px").setFlexGrow(0);
+//        downloadedVideoFilesGrid.addComponentColumn(person -> {
+//            Button editButton = new Button("查看");
+//            editButton.addClickListener(e -> {
+//                Video video = new Video();
+//                video.setWidth("600px");
+//                video.setControls(true);
+//                video.setSource(Paths.get(person.getFileName()));
+//                VideoDialog videoDialog = new VideoDialog(video);
+//                add(videoDialog);
+//            });
+//
+//            return editButton;
+//
+//        }).setWidth("150px").setFlexGrow(0);
         addNewBtn.addClickListener(e -> editor.editPreset(new VideoEncoderPreset()));
 
         downloadBtn.addClickListener(e -> {
@@ -240,7 +271,12 @@ public class MainView extends VerticalLayout {
     private void filesList() {
         Collection<DownloadedVideoFile> items = new LinkedList<DownloadedVideoFile>();
         try {
-            Files.newDirectoryStream(Paths.get(FileUtil.nvrHomeDir()), path -> path.toString().endsWith(".dav") || path.toString().endsWith(".mp4")).forEach(file -> {
+            Files.newDirectoryStream(Paths.get(FileUtil.nvrHomeDir()), new DirectoryStream.Filter<Path>() {
+                @Override
+                public boolean accept(Path entry) throws IOException {
+                    return !entry.toString().endsWith(".DS_Store");
+                }
+            }).forEach(file -> {
                 DownloadedVideoFile item = new DownloadedVideoFile();
                 item.setFileName(file.toFile().getAbsolutePath());
                 item.setFileSize(FileUtil.humanReadableByteCount(file.toFile().length()));
