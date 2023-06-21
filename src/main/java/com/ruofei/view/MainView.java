@@ -1,37 +1,22 @@
 package com.ruofei.view;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.CompletableFuture;
-
-import com.ruofei.domain.DownloadedVideoFile;
-import com.ruofei.repo.VideoEncoderPresetRepository;
-import com.ruofei.util.FileUtil;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.grid.ItemClickEvent;
-import com.vaadin.flow.component.grid.editor.Editor;
-import com.vaadin.flow.component.treegrid.TreeGrid;
-import org.springframework.util.StringUtils;
-
+import com.ruofei.components.VideoCompoment;
 import com.ruofei.components.VideoDownloader;
 import com.ruofei.components.VideoPresetEditor;
+import com.ruofei.domain.DownloadedVideoFile;
 import com.ruofei.domain.VideoEncoderPreset;
 import com.ruofei.okhttp3.DownloadFileProgressListener;
+import com.ruofei.repo.VideoEncoderPresetRepository;
 import com.ruofei.service.DownloadService;
 import com.ruofei.service.EncodeService;
+import com.ruofei.util.FileUtil;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
@@ -46,6 +31,18 @@ import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.material.Material;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.CompletableFuture;
 
 @Theme(Material.class)
 @Route
@@ -59,6 +56,8 @@ public class MainView extends VerticalLayout {
     private VideoPresetEditor editor;
     private VideoDownloader videoDownloader;
     private DownloadService downloadService;
+
+    private static VideoCompoment video;
 
     private TextField filter = new TextField("", "Type to filter");
     private Label diskSpace = new Label();
@@ -132,11 +131,14 @@ public class MainView extends VerticalLayout {
         downloadedVideoFilesGrid.addComponentColumn(person -> {
             Button editButton = new Button("查看");
             editButton.addClickListener(e -> {
-                if (DownloadedVideoFileeditor.isOpen())
-                    DownloadedVideoFileeditor.cancel();
-                downloadedVideoFilesGrid.getEditor().editItem(person);
+                video = VideoCompoment.getvideoCompoment();
+                video.setSrc(person.getFileName());
+                video.setMaxWidth("500px");
+                add(video);
             });
+
             return editButton;
+
         }).setWidth("150px").setFlexGrow(0);
         addNewBtn.addClickListener(e -> editor.editPreset(new VideoEncoderPreset()));
 
@@ -169,6 +171,7 @@ public class MainView extends VerticalLayout {
         comboBox.setItems("From selected channel", "From all channels");
         comboBox.setValue("From selected channel");
         comboBox.setWidth("250px");
+
 
 //        comboBox.addValueChangeListener(event -> {
 //            if (event.getSource().isEmpty()) {
