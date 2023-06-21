@@ -4,8 +4,10 @@ import com.vaadin.flow.component.HtmlContainer;
 import com.vaadin.flow.component.PropertyDescriptor;
 import com.vaadin.flow.component.PropertyDescriptors;
 import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.router.Route;
 
 @Tag("video")
+@Route("video")
 public class VideoCompoment extends HtmlContainer {
 
     private volatile static VideoCompoment videoCompoment;

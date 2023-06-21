@@ -133,7 +133,8 @@ public class MainView extends VerticalLayout {
             Button editButton = new Button("查看");
             editButton.addClickListener(e -> {
                 video = VideoCompoment.getvideoCompoment();
-                video.setSrc(person.getFileName());
+                video.setSrc("/Users/mintonmu/Downloads/test2.mp4");
+//                video.setSrc(person.getFileName());
                 video.setMaxWidth("500px");
                 VideoDialog videoDialog = new VideoDialog(video);
                 add(videoDialog);
