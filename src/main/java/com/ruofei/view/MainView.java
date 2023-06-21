@@ -1,5 +1,6 @@
 package com.ruofei.view;
 
+import com.github.olafj.vaadin.flow.Video;
 import com.ruofei.components.VideoCompoment;
 import com.ruofei.components.VideoDialog;
 import com.ruofei.components.VideoDownloader;
@@ -30,7 +31,6 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.material.Material;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
@@ -45,42 +45,41 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
 
+
 @Theme(Material.class)
 @Route
 @Push
 @Slf4j
 public class MainView extends VerticalLayout {
 
-    private VideoEncoderPresetRepository videoEncoderPresetRepository;
-    private Grid<VideoEncoderPreset> grid = new Grid<>(VideoEncoderPreset.class);
-    private Grid<DownloadedVideoFile> downloadedVideoFilesGrid = new Grid<>(DownloadedVideoFile.class);
-    private VideoPresetEditor editor;
-    private VideoDownloader videoDownloader;
-    private DownloadService downloadService;
-
     private static VideoCompoment video;
-
-    private TextField filter = new TextField("", "Type to filter");
-    private Label diskSpace = new Label();
-    private Button addNewBtn = new Button("New preset", VaadinIcon.PLUS.create());
-    private Button downloadBtn = new Button("Download", VaadinIcon.DOWNLOAD.create());
-    private Button encodeBtn = new Button("Encode", VaadinIcon.AIRPLANE.create());
-    private Button refreshBtn = new Button("Refresh", VaadinIcon.REFRESH.create());
-    private HorizontalLayout toolBar = new HorizontalLayout(filter, addNewBtn);
-    private Div message = createMessageDiv("tes");
-    private HorizontalLayout dateBar = new HorizontalLayout(message);
-    private TextField nvrIpAddress = new TextField("NVR IP Address", "192.168.30.4", "");
-    private TextField channel = new TextField("NVR channel", "3", "");
-    private TextField startDateTime = new TextField("start datetime", "2019-04-19 13:46:00", "");
-    private TextField endDateTime = new TextField("end datetime", "2019-04-19 13:47:30", "");
-    private HorizontalLayout downloadParamsBar = new HorizontalLayout(nvrIpAddress, channel, startDateTime, endDateTime);
-    private HorizontalLayout systemInfoBar = new HorizontalLayout(diskSpace);
+    private final VideoEncoderPresetRepository videoEncoderPresetRepository;
+    private final Grid<VideoEncoderPreset> grid = new Grid<>(VideoEncoderPreset.class);
+    private final Grid<DownloadedVideoFile> downloadedVideoFilesGrid = new Grid<>(DownloadedVideoFile.class);
+    private final VideoPresetEditor editor;
+    private final VideoDownloader videoDownloader;
+    private final DownloadService downloadService;
+    private final TextField filter = new TextField("", "Type to filter");
+    private final Label diskSpace = new Label();
+    private final Button addNewBtn = new Button("New preset", VaadinIcon.PLUS.create());
+    private final Button downloadBtn = new Button("Download", VaadinIcon.DOWNLOAD.create());
+    private final Button encodeBtn = new Button("Encode", VaadinIcon.AIRPLANE.create());
+    private final Button refreshBtn = new Button("Refresh", VaadinIcon.REFRESH.create());
+    private final HorizontalLayout toolBar = new HorizontalLayout(filter, addNewBtn);
+    private final Div message = createMessageDiv("tes");
+    private final HorizontalLayout dateBar = new HorizontalLayout(message);
+    private final TextField nvrIpAddress = new TextField("NVR IP Address", "192.168.30.4", "");
+    private final TextField channel = new TextField("NVR channel", "3", "");
+    private final TextField startDateTime = new TextField("start datetime", "2019-04-19 13:46:00", "");
+    private final TextField endDateTime = new TextField("end datetime", "2019-04-19 13:47:30", "");
+    private final HorizontalLayout downloadParamsBar = new HorizontalLayout(nvrIpAddress, channel, startDateTime, endDateTime);
+    private final HorizontalLayout systemInfoBar = new HorizontalLayout(diskSpace);
     ComboBox<String> comboBox = new ComboBox<>("Type");
-    private HorizontalLayout downloadBar = new HorizontalLayout(comboBox, downloadBtn);
-    private VerticalLayout downloadVideoLayout = new VerticalLayout(systemInfoBar, downloadParamsBar, dateBar, downloadBar, encodeBtn, refreshBtn, downloadedVideoFilesGrid);
+    private final HorizontalLayout downloadBar = new HorizontalLayout(comboBox, downloadBtn);
+    private final VerticalLayout downloadVideoLayout = new VerticalLayout(systemInfoBar, downloadParamsBar, dateBar, downloadBar, encodeBtn, refreshBtn, downloadedVideoFilesGrid);
+    Editor<DownloadedVideoFile> DownloadedVideoFileeditor = downloadedVideoFilesGrid.getEditor();
     private DownloadFileProgressListener progressListener;
     private Timer autoUpdateInfoOnPage = new Timer();
-    Editor<DownloadedVideoFile> DownloadedVideoFileeditor = downloadedVideoFilesGrid.getEditor();
 
     public MainView(DownloadService downloadService, EncodeService encodeService, VideoEncoderPresetRepository videoEncoderPresetRepository, VideoPresetEditor editor, VideoDownloader videoDownloader) {
         File dir = new File(FileUtil.nvrHomeDir());
@@ -103,7 +102,7 @@ public class MainView extends VerticalLayout {
         grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
         grid.getColumnByKey("presetName").setWidth("350px").setFlexGrow(0);
 
-        downloadedVideoFilesGrid.setColumns("fileName","fileSize");
+        downloadedVideoFilesGrid.setColumns("fileName", "fileSize");
         downloadedVideoFilesGrid.addComponentColumn(p -> {
             Button frontbtn = new Button("前");
             frontbtn.addClickListener(e -> {
@@ -132,10 +131,10 @@ public class MainView extends VerticalLayout {
         downloadedVideoFilesGrid.addComponentColumn(person -> {
             Button editButton = new Button("查看");
             editButton.addClickListener(e -> {
-                video = VideoCompoment.getvideoCompoment();
-                video.setSrc("/Users/mintonmu/Downloads/test2.mp4");
-//                video.setSrc(person.getFileName());
-                video.setMaxWidth("500px");
+                Video video = new Video();
+                video.setWidth("600px");
+                video.setControls(true);
+                video.setSource(Paths.get(person.getFileName()));
                 VideoDialog videoDialog = new VideoDialog(video);
                 add(videoDialog);
             });
@@ -202,14 +201,14 @@ public class MainView extends VerticalLayout {
                         if (firstUpdate) {
                             firstUpdate = false;
                             if (contentLength == -1) {
-                                log.info("content-length: unknown");
+                                MainView.log.info("content-length: unknown");
                             } else {
                                 System.out.format("content-length: %d\n", contentLength);
                             }
                         }
 
                         if (contentLength != -1) {
-                            message.setText(String.valueOf((100 * bytesRead) / contentLength) + "% done "
+                            message.setText((100 * bytesRead) / contentLength + "% done "
                                     + FileUtil.humanReadableByteCount(bytesRead) + " of "
                                     + FileUtil.humanReadableByteCount(contentLength));
                         }

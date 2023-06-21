@@ -7,7 +7,6 @@ import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.router.Route;
 
 @Tag("video")
-@Route("video")
 public class VideoCompoment extends HtmlContainer {
 
     private volatile static VideoCompoment videoCompoment;
