@@ -70,7 +70,7 @@ public class MainView extends VerticalLayout {
     private final HorizontalLayout toolBar = new HorizontalLayout(filter, addNewBtn);
     private final Div message = createMessageDiv("tes");
     private final HorizontalLayout dateBar = new HorizontalLayout(message);
-    private final TextField nvrIpAddress = new TextField("NVR IP Address", "192.168.30.4", "");
+    private final TextField nvrIpAddress = new TextField("NVR IP Address", "127.0.0.1", "");
     private final TextField channel = new TextField("NVR channel", "3", "");
     private final TextField startDateTime = new TextField("start datetime", "2019-04-19 13:46:00", "");
     private final TextField endDateTime = new TextField("end datetime", "2019-04-19 13:47:30", "");
@@ -115,7 +115,7 @@ public class MainView extends VerticalLayout {
                 Path path = Paths.get(p.getFileName());
                 // 获取文件名
                 String fileName = path.getFileName().toString();
-                String b = FileUtil.nvrHomeDir()  + "/" + fileName + "/ch-2" + fileName.substring(2)+ ".mp4";
+                String b = FileUtil.nvrHomeDir()  + "/" + fileName + "/ch-1" + fileName.substring(2)+ ".mp4";
                 video.setSource(Paths.get(b));
                 VideoDialog videoDialog = new VideoDialog(video);
                 add(videoDialog);
@@ -132,7 +132,7 @@ public class MainView extends VerticalLayout {
                 Path path = Paths.get(p.getFileName());
                 // 获取文件名
                 String fileName = path.getFileName().toString();
-                String b = FileUtil.nvrHomeDir()  + "/" + fileName + "/ch-2" + fileName.substring(2)+ ".mp4";
+                String b = FileUtil.nvrHomeDir()  + "/" + fileName + "/ch-3" + fileName.substring(2)+ ".mp4";
                 video.setSource(Paths.get(b));
                 VideoDialog videoDialog = new VideoDialog(video);
                 add(videoDialog);
@@ -149,7 +149,7 @@ public class MainView extends VerticalLayout {
                 Path path = Paths.get(p.getFileName());
                 // 获取文件名
                 String fileName = path.getFileName().toString();
-                String b = FileUtil.nvrHomeDir()  + "/" + fileName + "/ch-2" + fileName.substring(2)+ ".mp4";
+                String b = FileUtil.nvrHomeDir()  + "/" + fileName + "/ch-5" + fileName.substring(2)+ ".mp4";
                 video.setSource(Paths.get(b));
                 VideoDialog videoDialog = new VideoDialog(video);
                 add(videoDialog);
@@ -176,7 +176,8 @@ public class MainView extends VerticalLayout {
         addNewBtn.addClickListener(e -> editor.editPreset(new VideoEncoderPreset()));
 
         downloadBtn.addClickListener(e -> {
-            CompletableFuture.runAsync(() -> downloadService.download(nvrIpAddress
+            CompletableFuture.runAsync(() ->
+                    downloadService.download(nvrIpAddress
                             .getValue(),
                     channel.getValue(),
                     startDateTime.getValue(),

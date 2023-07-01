@@ -103,6 +103,13 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.freedesktop.gstreamer/gst1-java-core -->
+		<dependency>
+			<groupId>org.freedesktop.gstreamer</groupId>
+			<artifactId>gst1-java-core</artifactId>
+			<version>1.4.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<dependencyManagement>

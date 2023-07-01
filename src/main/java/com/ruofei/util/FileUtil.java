@@ -15,6 +15,9 @@ public class FileUtil {
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 
+    public static String makeDirName(String startDateTime, String endDateTime) {
+        return ("ch-" + startDateTime + "-" + endDateTime).replace(" ", "-").replace(":", "-");
+    }
     public static String makeFileName(String channel, String startDateTime, String endDateTime) {
         return ("ch-" + channel + "-" + startDateTime + "-" + endDateTime).replace(" ", "-").replace(":", "-");
     }
