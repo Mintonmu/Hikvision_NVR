@@ -37,9 +37,9 @@ public class DownloadService{
         if (!destDir.exists())
             destDir.mkdirs();
 
-        String dest1 = destDirName + "/" + FileUtil.makeFileName("1", startDateTime, endDateTime) + ".mp4";
-        String dest3 = destDirName + "/"+ FileUtil.makeFileName("3", startDateTime, endDateTime) + ".mp4";
-        String dest5 = destDirName + "/" + FileUtil.makeFileName("5", startDateTime, endDateTime) + ".mp4";
+        String dest1 = destDirName + "\\\\" + FileUtil.makeFileName("1", startDateTime, endDateTime) + ".mp4";
+        String dest3 = destDirName + "\\\\"+ FileUtil.makeFileName("3", startDateTime, endDateTime) + ".mp4";
+        String dest5 = destDirName + "\\\\" + FileUtil.makeFileName("5", startDateTime, endDateTime) + ".mp4";
 //        System.out.println(dest1);
         try {
             DownloadUtil.convert(url1, dest1, secs, progressListener);

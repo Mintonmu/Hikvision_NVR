@@ -1,4 +1,4 @@
-nvr.home: ${user.home}/nvr
+nvr.home: D:\\\\nvr
 spring:
   h2:
     console:

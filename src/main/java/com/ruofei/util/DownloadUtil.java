@@ -21,24 +21,23 @@ public class DownloadUtil implements Runnable{
         this.secs = secs;
     }
     public static void convert(String src, String dest, long secs, DownloadFileProgressListener progressListener)throws Exception{
-//        String ffcmdpath = "ffmpeg";
+        String ffcmdpath = "cmd /c ffmpeg";
         StringBuilder cmd = new StringBuilder();
-//        cmd.append(ffcmdpath)
-//                .append(" -rtsp_transport tcp ") // 使用tcp的命令，默认是udp
-//                .append(" -i ").append(src)
-////                	.append(" -vcodec copy ")
+        cmd.append(ffcmdpath)
+                .append(" -rtsp_transport tcp ") // 使用tcp的命令，默认是udp
+                .append(" -i ").append(src)
+                	.append(" -vcodec copy ")
 //                .append(" -vcodec h264 ")
-//                //	.append(" -acodec copy ") // 音频，不设置好像也有。
+                //	.append(" -acodec copy ") // 音频，不设置好像也有。
 //                //	.append(" -s 1280*720 ")   // 设置分辨率，关系到视频的大小或者为 -vf scale=iw/2:ih/2
-//                //	.append(" -vf scale=iw/2:ih/2 ")
-//                .append(" -y ") // 覆盖
-//                .append(dest);
-        cmd.append("timeout -s SIGINT ")
-                .append(secs+3)
-                .append("s gst-launch-1.0 -e rtspsrc location=")
-                .append(src)
-                .append(" protocols=tcp ! rtph264depay ! h264parse ! mp4mux ! progressreport update-freq=1 ! filesink location=")
+                //	.append(" -vf scale=iw/2:ih/2 ")
+                .append(" -y ") // 覆盖
                 .append(dest);
+//
+//        cmd.append("cmd /c gst-launch-1.0 -e rtspsrc location=")
+//            .append(src)
+//            .append(" protocols=tcp ! rtph264depay ! h264parse ! mp4mux ! progressreport update-freq=1 ! filesink location=")
+//            .append(dest);
         System.out.println(cmd);
         Process process = Runtime.getRuntime().exec(cmd.toString());
         // 输出内容
@@ -69,13 +68,13 @@ public class DownloadUtil implements Runnable{
     public static boolean stopConvert(Process process ){
 //        System.out.println("###send EOS cmd ");
         try{
-            if (isLinux()) {
-                String pid = getProcessId(process);
-                if (pid != null) {
-                    ProcessBuilder killProcessBuilder = new ProcessBuilder("kill", "-2", pid);
-                    killProcessBuilder.start();
-                }
-            }
+//            if (isLinux()) {
+//                String pid = getProcessId(process);
+//                if (pid != null) {
+//                    ProcessBuilder killProcessBuilder = new ProcessBuilder("kill", "-2", pid);
+//                    killProcessBuilder.start();
+//                }
+//            }
 //            long pid = process.pid();
 //            Runtime.getRuntime().exec("kill " + pid);
 //            BufferedWriter out = new BufferedWriter (new OutputStreamWriter(process.getOutputStream()));
