@@ -1,4 +1,5 @@
-nvr.home: D:\\\\nvr
+nvr:
+  home: D:\\\\nvr
 spring:
   h2:
     console:

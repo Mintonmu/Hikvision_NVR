@@ -115,8 +115,8 @@ public class MainView extends VerticalLayout {
                 Path path = Paths.get(p.getFileName());
                 // 获取文件名
                 String fileName = path.getFileName().toString();
-                String b = FileUtil.nvrHomeDir()  + "/" + fileName + "/ch-1" + fileName.substring(2)+ ".mp4";
-                video.setSource(Paths.get(b));
+//                String b = FileUtil.nvrHomeDir()  + "/" + fileName + "/ch-1" + fileName.substring(2)+ ".mp4";
+                video.setSource("api/media/video?path="+"/" + fileName + "/ch-1" + fileName.substring(2)+ ".mp4");
                 VideoDialog videoDialog = new VideoDialog(video);
                 add(videoDialog);
             });
@@ -132,8 +132,8 @@ public class MainView extends VerticalLayout {
                 Path path = Paths.get(p.getFileName());
                 // 获取文件名
                 String fileName = path.getFileName().toString();
-                String b = FileUtil.nvrHomeDir()  + "/" + fileName + "/ch-3" + fileName.substring(2)+ ".mp4";
-                video.setSource(Paths.get(b));
+//                String b = FileUtil.nvrHomeDir()  + "/" + fileName + "/ch-3" + fileName.substring(2)+ ".mp4";
+                video.setSource("api/media/video?path="+"/" + fileName + "/ch-3" + fileName.substring(2)+ ".mp4");
                 VideoDialog videoDialog = new VideoDialog(video);
                 add(videoDialog);
             });
@@ -149,8 +149,8 @@ public class MainView extends VerticalLayout {
                 Path path = Paths.get(p.getFileName());
                 // 获取文件名
                 String fileName = path.getFileName().toString();
-                String b = FileUtil.nvrHomeDir()  + "/" + fileName + "/ch-5" + fileName.substring(2)+ ".mp4";
-                video.setSource(Paths.get(b));
+//                String b = FileUtil.nvrHomeDir()  + "/" + fileName + "/ch-5" + fileName.substring(2)+ ".mp4";
+                video.setSource("api/media/video?path="+"/" + fileName + "/ch-5" + fileName.substring(2)+ ".mp4");
                 VideoDialog videoDialog = new VideoDialog(video);
                 add(videoDialog);
             });
