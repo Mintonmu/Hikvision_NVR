@@ -22,7 +22,7 @@ public class VideoDialog extends Div {
         dialogLayout.setPadding(false);
         dialogLayout.setSpacing(false);
         dialogLayout.setAlignItems(FlexComponent.Alignment.STRETCH);
-        dialogLayout.getStyle().set("width", "600px").set("max-width", "100%");
+        dialogLayout.getStyle().set("width", "500px").set("max-width", "100%");
         dialogLayout.setAlignSelf(FlexComponent.Alignment.END, closeButton);
         return dialogLayout;
     }

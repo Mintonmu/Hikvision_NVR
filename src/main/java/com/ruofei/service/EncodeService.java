@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EncodeService {
 
-    private final static Path BIN = Paths.get("/usr/bin");
+    private final static Path BIN = Paths.get("");
     
     public void encode(String nvrIpAddress, String channel, String startDateTime, String endDateTime) {
         log.info("Encode started");
