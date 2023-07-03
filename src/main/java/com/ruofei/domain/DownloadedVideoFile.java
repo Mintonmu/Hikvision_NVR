@@ -10,5 +10,4 @@ public class DownloadedVideoFile {
     private String fileName;
     private String downloadProgress;
     private String fileSize;
-    private String operator;
 }

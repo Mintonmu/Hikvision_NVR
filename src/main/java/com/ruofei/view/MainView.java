@@ -6,7 +6,6 @@ import com.ruofei.components.VideoDialog;
 import com.ruofei.components.VideoDownloader;
 import com.ruofei.components.VideoPresetEditor;
 import com.ruofei.domain.DownloadedVideoFile;
-import com.ruofei.domain.VideoEncoderPreset;
 import com.ruofei.okhttp3.DownloadFileProgressListener;
 import com.ruofei.repo.VideoEncoderPresetRepository;
 import com.ruofei.service.DownloadService;
@@ -19,18 +18,15 @@ import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.material.Material;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,14 +56,14 @@ public class MainView extends VerticalLayout {
     private final Div message = createMessageDiv("tes");
     private final HorizontalLayout dateBar = new HorizontalLayout(message);
     private final TextField nvrIpAddress = new TextField("NVR IP Address", "127.0.0.1", "请输入服务器地址");
-    private final TextField channel = new TextField("NVR channel", "3", "请输入请求通道");
+    //    private final TextField channel = new TextField("NVR channel", "3", "请输入请求通道");
     private final TextField startDateTime = new TextField("start datetime", "请输入开始时间");
     private final TextField endDateTime = new TextField("end datetime", "请输入结束时间");
 
 
-    private final HorizontalLayout downloadParamsBar = new HorizontalLayout(nvrIpAddress, channel, startDateTime, endDateTime,downloadBtn);
-//    private final HorizontalLayout downloadBar = new HorizontalLayout();
-    private final VerticalLayout downloadVideoLayout = new VerticalLayout(downloadParamsBar, dateBar,downloadedVideoFilesGrid);
+    private final HorizontalLayout downloadParamsBar = new HorizontalLayout(nvrIpAddress, startDateTime, endDateTime, downloadBtn);
+    //    private final HorizontalLayout downloadBar = new HorizontalLayout();
+    private final VerticalLayout downloadVideoLayout = new VerticalLayout(downloadParamsBar, dateBar, downloadedVideoFilesGrid);
     Editor<DownloadedVideoFile> DownloadedVideoFileeditor = downloadedVideoFilesGrid.getEditor();
     private DownloadFileProgressListener progressListener;
     private Timer autoUpdateInfoOnPage = new Timer();
@@ -85,7 +81,7 @@ public class MainView extends VerticalLayout {
         this.editor = editor;
         this.videoDownloader = videoDownloader;
         add(downloadVideoLayout, videoDownloader, editor);
-        downloadedVideoFilesGrid.setColumns("fileName", "fileSize");
+        downloadedVideoFilesGrid.setColumns("fileName");
         downloadedVideoFilesGrid.addComponentColumn(p -> {
             Button frontbtn = new Button("前");
             frontbtn.addClickListener(e -> {
@@ -139,7 +135,7 @@ public class MainView extends VerticalLayout {
         }).setWidth("150px").setFlexGrow(0);
 
         downloadBtn.addClickListener(e -> {
-            CompletableFuture.runAsync(() -> downloadService.download(nvrIpAddress.getValue(), channel.getValue(), startDateTime.getValue(), endDateTime.getValue(), progressListener));
+            CompletableFuture.runAsync(() -> downloadService.download(nvrIpAddress.getValue(), startDateTime.getValue(), endDateTime.getValue(), progressListener));
         });
         message.setVisible(true);
     }
@@ -204,8 +200,6 @@ public class MainView extends VerticalLayout {
             }).forEach(file -> {
                 DownloadedVideoFile item = new DownloadedVideoFile();
                 item.setFileName(file.toFile().getAbsolutePath());
-                item.setFileSize(FileUtil.humanReadableByteCount(file.toFile().length()));
-                item.setOperator("查看");
                 items.add(item);
             });
         } catch (IOException e) {

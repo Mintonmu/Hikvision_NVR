@@ -1,23 +1,29 @@
 package com.ruofei.service;
 
+import com.ruofei.okhttp3.DownloadFileProgressListener;
+import com.ruofei.util.DownloadUtil;
+import com.ruofei.util.FileUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
 import java.io.File;
-import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import com.ruofei.util.DownloadUtil;
-import com.ruofei.util.FileUtil;
-import org.springframework.stereotype.Service;
-
-import com.ruofei.okhttp3.DownloadFileProgressListener;
-
-import lombok.extern.slf4j.Slf4j;
-
 @Service
 @Slf4j
-public class DownloadService{
+public class DownloadService {
 
-    public void download(String nvrIpAddress, String channel, String startDateTime, String endDateTime, DownloadFileProgressListener progressListener) {
+    //计算两个时间相差的秒数
+    public static long getTime(String startTime, String endTime) throws ParseException {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        long eTime = df.parse(endTime).getTime();
+        long sTime = df.parse(startTime).getTime();
+        long diff = (eTime - sTime) / 1000;
+        return diff;
+    }
+
+    public void download(String nvrIpAddress, String startDateTime, String endDateTime, DownloadFileProgressListener progressListener) {
 //        rtsp://admin:hq8569678@172.16.16.170:554/Streaming/tracks/101??starttime=20230601t102012z&endtime=20230601t102112z
 
 //        String url = ("http://" + nvrIpAddress + "/cgi-bin/c?action=startLoad&channel=" + channel + "&startTime="
@@ -38,7 +44,7 @@ public class DownloadService{
             destDir.mkdirs();
 
         String dest1 = destDirName + "\\\\" + FileUtil.makeFileName("1", startDateTime, endDateTime) + ".mp4";
-        String dest3 = destDirName + "\\\\"+ FileUtil.makeFileName("3", startDateTime, endDateTime) + ".mp4";
+        String dest3 = destDirName + "\\\\" + FileUtil.makeFileName("3", startDateTime, endDateTime) + ".mp4";
         String dest5 = destDirName + "\\\\" + FileUtil.makeFileName("5", startDateTime, endDateTime) + ".mp4";
 //        System.out.println(dest1);
         try {
@@ -48,15 +54,6 @@ public class DownloadService{
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    //计算两个时间相差的秒数
-    public static long getTime(String startTime, String endTime) throws ParseException {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        long eTime = df.parse(endTime).getTime();
-        long sTime = df.parse(startTime).getTime();
-        long diff = (eTime - sTime) / 1000;
-        return diff;
     }
 
 }
