@@ -4,29 +4,35 @@ import com.ruofei.okhttp3.DownloadFileProgressListener;
 
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class DownloadUtil implements Runnable{
-    InputStream in ; // 正常输出流
-    boolean stop ; // 结束进程
+public class DownloadUtil implements Runnable {
+    InputStream in; // 正常输出流
+    boolean stop; // 结束进程
     int maxFrameCount = 75000;
-    Process pro ;
+    Process pro;
     long secs;
     DownloadFileProgressListener progressListener;
 
-    public DownloadUtil(Process process, InputStream in, long secs, DownloadFileProgressListener progressListener){
+    public DownloadUtil(Process process, InputStream in, long secs, DownloadFileProgressListener progressListener) {
         this.in = in;
         this.pro = process;
         this.progressListener = progressListener;
         this.secs = secs;
     }
-    public static void convert(String src, String dest, long secs, DownloadFileProgressListener progressListener)throws Exception{
+
+    public static void convert(String src, String dest, long secs, DownloadFileProgressListener progressListener) throws Exception {
         String ffcmdpath = "cmd /c ffmpeg";
         StringBuilder cmd = new StringBuilder();
         cmd.append(ffcmdpath)
                 .append(" -rtsp_transport tcp ") // 使用tcp的命令，默认是udp
                 .append(" -i ").append(src)
-                	.append(" -vcodec copy ")
+                .append(" -vcodec copy ")
 //                .append(" -vcodec h264 ")
                 //	.append(" -acodec copy ") // 音频，不设置好像也有。
 //                //	.append(" -s 1280*720 ")   // 设置分辨率，关系到视频的大小或者为 -vf scale=iw/2:ih/2
@@ -42,14 +48,16 @@ public class DownloadUtil implements Runnable{
         Process process = Runtime.getRuntime().exec(cmd.toString());
         // 输出内容
         DownloadUtil twffIn = new DownloadUtil(process, process.getInputStream(), secs, progressListener);
-        DownloadUtil twffInErr = new DownloadUtil(process,process.getErrorStream(), secs, progressListener);
+        DownloadUtil twffInErr = new DownloadUtil(process, process.getErrorStream(), secs, progressListener);
         Thread t = new Thread(twffIn);
         Thread t1 = new Thread(twffInErr);
-        t.start();t1.start();
+        t.start();
+        t1.start();
         // 停止指令,10秒后停止 ,一定要发送这个，要不然视频保存不下来
 
         int i = process.waitFor(); // 一定要配合2个 inputstream ，要不然会一直阻塞
-        twffIn.setStop(true);twffInErr.setStop(true); // 停止 线程
+        twffIn.setStop(true);
+        twffInErr.setStop(true); // 停止 线程
     }
 
     public void setStop(boolean stop) {
@@ -58,16 +66,16 @@ public class DownloadUtil implements Runnable{
 
 
     /**
-     * @title stopConvert
-     * @date 2018年10月11日
      * @param process
      * @return
+     * @title stopConvert
+     * @date 2018年10月11日
      * @description 发送停止命令,
      * 但是要注意发送完成后，不一定会马上停止 。因为进程结束也是需要时间的
      */
-    public static boolean stopConvert(Process process ){
+    public static boolean stopConvert(Process process) {
 //        System.out.println("###send EOS cmd ");
-        try{
+        try {
 //            if (isLinux()) {
 //                String pid = getProcessId(process);
 //                if (pid != null) {
@@ -87,13 +95,14 @@ public class DownloadUtil implements Runnable{
 //            out.flush();
 //            process.destroyForcibly();
 
-        }catch(Exception err){
+        } catch (Exception err) {
 //            err.printStackTrace();
             System.out.println(err.toString());
             return false;
         }
         return true;
     }
+
     private static boolean isLinux() {
         String osName = System.getProperty("os.name").toLowerCase();
         return osName.contains("linux");
@@ -112,29 +121,51 @@ public class DownloadUtil implements Runnable{
         }
         return null;
     }
+
+    static Pattern p = Pattern.compile("\\d{2}:\\d{2}:\\d{2}");
+
     @Override
     public void run() {
         Scanner scanner = new Scanner(in);
-        while(!stop){
-            if(scanner.hasNext()){
+        while (!stop) {
+            if (scanner.hasNext()) {
                 String s = scanner.nextLine();
-                System.out.println(s);
+//                System.out.println(s);
                 // 判断停止录像的条件
 
-                if(s.contains("progressreport0")){
-                    int seconds = Integer.parseInt(s.substring(s.indexOf("):")+2
-                            ,s.indexOf("seconds")).trim());
-                    if(seconds >= this.secs/3.0){
-                        cnt ++;
-                        this.progressListener.update(seconds, this.secs, cnt == 3);
-                        stop=true;
-                        stopConvert(pro);
-                    }else{
-                        this.progressListener.update(seconds, this.secs, false);
+                if (s.startsWith("frame=")) {
+                    String time = s.split("time=")[1].substring(0, 8);
+                    if (time.charAt(2) == ':' && time.charAt(5) == ':') {
+                        SimpleDateFormat format1 = new SimpleDateFormat("HH:mm:ss");
+                        try {
+                            long seconds = format1.parse(time).getSeconds();
+                            if (seconds >= this.secs) {
+                                cnt++;
+                                this.progressListener.update(seconds, this.secs, cnt == 3);
+                                stop = true;
+                                stopConvert(pro);
+                            } else {
+                                this.progressListener.update(seconds, this.secs, false);
+                            }
+
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
                     }
+//                    int seconds = Integer.parseInt(s.substring(s.indexOf("):")+2
+//                            ,s.indexOf("seconds")).trim());
+//                    if(seconds >= this.secs/3.0){
+//                        cnt ++;
+//                        this.progressListener.update(seconds, this.secs, cnt == 3);
+//                        stop=true;
+//                        stopConvert(pro);
+//                    }else{
+//                        this.progressListener.update(seconds, this.secs, false);
+//                    }
 
                 }
-            }else{
+            } else {
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
@@ -145,5 +176,6 @@ public class DownloadUtil implements Runnable{
         scanner.close();
         System.out.println("###读取线程结束啦###");
     }
+
     static int cnt;
 }
