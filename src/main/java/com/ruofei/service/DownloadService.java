@@ -29,9 +29,12 @@ public class DownloadService {
 //        String url = ("http://" + nvrIpAddress + "/cgi-bin/c?action=startLoad&channel=" + channel + "&startTime="
 //                + startDateTime + "&endTime=" + endDateTime).replace(" ", "%20");
 
-        String url1 = "rtsp://" + nvrIpAddress + ":554/live1";
-        String url3 = "rtsp://" + nvrIpAddress + ":554/live3";
-        String url5 = "rtsp://" + nvrIpAddress + ":554/live5";
+//        String url1 = "rtsp://" + nvrIpAddress + ":554/live1";
+//        String url3 = "rtsp://" + nvrIpAddress + ":554/live3";
+//        String url5 = "rtsp://" + nvrIpAddress + ":554/live5";
+        String url1 = "rtsp://admin:hq8569678@172.16.16.170:554/Streaming/tracks/101??starttime=20230601t102012z&endtime=20230601t102112z";
+        String url3 = "rtsp://admin:hq8569678@172.16.16.170:554/Streaming/tracks/101??starttime=20230601t102012z&endtime=20230601t102112z";
+        String url5 = "rtsp://admin:hq8569678@172.16.16.170:554/Streaming/tracks/101??starttime=20230601t102012z&endtime=20230601t102112z";
         long secs = 0;
         try {
             secs = getTime(startDateTime, endDateTime);

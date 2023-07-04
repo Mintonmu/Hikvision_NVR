@@ -130,7 +130,7 @@ public class DownloadUtil implements Runnable {
         while (!stop) {
             if (scanner.hasNext()) {
                 String s = scanner.nextLine();
-//                System.out.println(s);
+                System.out.println(s);
                 // 判断停止录像的条件
 
                 if (s.startsWith("frame=")) {
