@@ -1,5 +1,9 @@
 package com.ruofei.util;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
+
 public class FileUtil {
 
     public static String humanReadableByteCount(long bytes) {
@@ -22,12 +26,12 @@ public class FileUtil {
         return ("ch-" + channel + "-" + startDateTime + "-" + endDateTime).replace(" ", "-").replace(":", "-");
     }
 
-    public static String nvrHomeDir() {
-        return "D:\\\\nvr\\\\";
-    }
-    
 
     public static void main(String[] args) {
         System.out.println(makeFileName("2", "2018-12-05 10:00:00", "2018-13-05 12:00:00"));
+    }
+
+    public static String nvrHomeDir() {
+        return "D:\\nvr\\";
     }
 }

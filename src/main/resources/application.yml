@@ -1,5 +1,9 @@
 nvr:
-  home: D:\\\\nvr
+  host: 172.16.16.170
+  username: admin
+  password: hq8569678
+  port: 554
+  home: D:\\nvr
 spring:
   h2:
     console:
@@ -24,13 +28,13 @@ spring:
     initial-size: 10
     max-active: 30
     min-idle: 10
-#  devtools:
-#    restart:
-#      enabled: false
+  devtools:
+    restart:
+      enabled: false
 
 
-mybatis-plus:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#mybatis-plus:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 server:
   port: 9999

@@ -27,6 +27,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.material.Material;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.camel.language.Bean;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,6 +45,7 @@ import java.util.concurrent.CompletableFuture;
 @Route
 @Push
 @Slf4j
+
 public class MainView extends VerticalLayout {
 
     private static VideoCompoment video;

@@ -1,11 +1,15 @@
 package com.ruofei;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @Configuration
+@EnableScheduling
+@ComponentScan("com.ruofei.components")
 public class WebAppConfig extends WebMvcConfigurerAdapter {
 
     @Value("${nvr.home}")
