@@ -26,7 +26,7 @@ public class DownloadUtil implements Runnable {
     }
 
     public static void convert(String src, String dest, long secs, DownloadFileProgressListener progressListener) throws Exception {
-        String ffcmdpath = "cmd /c ffmpeg -timeout 5000";
+        String ffcmdpath = "cmd /c ffmpeg -timeout 5";
         StringBuilder cmd = new StringBuilder();
         cmd.append(ffcmdpath)
                 .append(" -rtsp_transport tcp ") // 使用tcp的命令，默认是udp

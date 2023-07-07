@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 @Data
-@TableName(value = "VEH_CR_PROCSTATUS")
+@TableName(value = "trffpn_app.veh_cr_procstatus_view")
 public class Video {
     @TableId(value = "LSH")
     private String LSH; // 流水号
@@ -21,8 +21,4 @@ public class Video {
     private java.util.Date KSSJ;//开始时间
     @TableField(value = "XTJSSJ")
     private java.util.Date XTJSSJ;//系统结束时间
-    @TableField(value = "CYZT")
-    private char CYZT;//查验状态
-    @TableField(value = "JLZT")
-    private char JLZT;//记录状态
 }

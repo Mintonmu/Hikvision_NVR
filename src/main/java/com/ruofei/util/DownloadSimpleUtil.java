@@ -19,7 +19,7 @@ public class DownloadSimpleUtil implements Runnable {
     }
 
     public static boolean convert(String src, String dest, long secs) throws Exception {
-        String ffcmdpath = "cmd /c ffmpeg -timeout 5000000";
+        String ffcmdpath = "cmd /c ffmpeg -timeout 5";
         StringBuilder cmd = new StringBuilder();
         cmd.append(ffcmdpath)
                 .append(" -rtsp_transport tcp ") // 使用tcp的命令，默认是udp
@@ -60,11 +60,11 @@ public class DownloadSimpleUtil implements Runnable {
             if (scanner.hasNext()) {
                 String s = scanner.nextLine();
                 System.out.println(s);
-                if (s.contains("Qavg:")){
-                    stop = true;
-                    isFinish = true;
-                    break;
-                }
+//                if (s.contains("Qavg:")){
+//                    stop = true;
+//                    isFinish = true;
+//                    break;
+//                }
                 if (s.startsWith("frame=")) {
                     String time = s.split("time=")[1].substring(0, 8);
                     if (time.charAt(2) == ':' && time.charAt(5) == ':') {

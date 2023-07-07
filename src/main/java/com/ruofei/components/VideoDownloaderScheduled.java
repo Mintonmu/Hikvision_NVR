@@ -2,6 +2,7 @@ package com.ruofei.components;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
+import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.ruofei.dao.VideoMapper;
 import com.ruofei.dao.VideoStatusMapper;
 import com.ruofei.entity.Video;
@@ -16,6 +17,7 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -39,7 +41,10 @@ public class VideoDownloaderScheduled {
 
     @Scheduled(fixedDelay = 5000)
     public void scheduled() {
-        List<Video> videoList = videoMapper.selectList(null);
+        LambdaUpdateWrapper<Video> LW = new LambdaUpdateWrapper<>();
+        LW
+                .ge(Video::getKSSJ, new Date(123, Calendar.JUNE, 10)).orderByDesc(Video::getKSSJ);
+        List<Video> videoList = videoMapper.selectList(LW);
         for (Video video :
                 videoList) {
             String lsh = video.getLSH();
@@ -47,10 +52,10 @@ public class VideoDownloaderScheduled {
             VideoStatus videoStatus = new LambdaQueryChainWrapper<>(statusMapper)
                     .eq(VideoStatus::getLSH, video.getLSH())
                     .eq(VideoStatus::getKSSJ, video.getKSSJ()).one();
-            if (videoStatus == null || videoStatus.getSTATUS() == 0) {
+            if (videoStatus == null || videoStatus.getSTATUS() != 9) {
                 // 查询不到记录，或者记录状态为0，开始下载
                 // -------------- 下载视频
-                int status = 0;
+                int status = videoStatus == null ? 0 : videoStatus.getSTATUS();
 
                 Date startTime = video.getKSSJ();
                 Date endTime = video.getXTJSSJ();
@@ -77,21 +82,62 @@ public class VideoDownloaderScheduled {
                     String dest2 = dir + "ch-3-" + save_dateformat.format(startTime) + "-" + save_dateformat.format(endTime) + ".mp4";
                     String dest3 = dir + "ch-5-" + save_dateformat.format(startTime) + "-" + save_dateformat.format(endTime) + ".mp4";
 
-                    boolean isFinish1 = DownloadSimpleUtil.convert(src1, dest1, getTime(startTime, endTime));
-                    boolean isFinish2 = DownloadSimpleUtil.convert(src2, dest2, getTime(startTime, endTime));
-                    boolean isFinish3 = DownloadSimpleUtil.convert(src3, dest3, getTime(startTime, endTime));
+                    if (videoStatus == null) {
+                        boolean isFinish1 = DownloadSimpleUtil.convert(src1, dest1, getTime(startTime, endTime));
+                        boolean isFinish2 = DownloadSimpleUtil.convert(src2, dest2, getTime(startTime, endTime));
+                        boolean isFinish3 = DownloadSimpleUtil.convert(src3, dest3, getTime(startTime, endTime));
+                        if (isFinish1){
+                            status+=1;
+                        }
+                        if (isFinish2){
+                            status+=3;
+                        }
+                        if (isFinish3){
+                            status+=5;
+                        }
 
-//                    System.out.println("________________________________");
-//                    System.out.println(lsh);
-//                    System.out.println(startTimeStr);
-//                    System.out.println(endTimeStr);
-//
-//                    System.out.println(isFinish1);
-//                    System.out.println(isFinish2);
-//                    System.out.println(isFinish3);
-//                    System.out.println("________________________________");
-                    if (isFinish1 && isFinish2 && isFinish3) {
-                        status = 1;
+                    } else if (videoStatus.getSTATUS() == 1) {
+                        boolean isFinish2 = DownloadSimpleUtil.convert(src2, dest2, getTime(startTime, endTime));
+                        if (isFinish2) {
+                            status += 3;
+                        }
+                        boolean isFinish3 = DownloadSimpleUtil.convert(src3, dest3, getTime(startTime, endTime));
+                        if (isFinish3) {
+                            status += 5;
+                        }
+                    } else if (videoStatus.getSTATUS() == 3) {
+                        boolean isFinish1 = DownloadSimpleUtil.convert(src1, dest1, getTime(startTime, endTime));
+                        if (isFinish1) {
+                            status += 1;
+                        }
+                        boolean isFinish3 = DownloadSimpleUtil.convert(src3, dest3, getTime(startTime, endTime));
+                        if (isFinish3) {
+                            status += 5;
+                        }
+                    } else if (videoStatus.getSTATUS() == 5) {
+                        boolean isFinish1 = DownloadSimpleUtil.convert(src1, dest1, getTime(startTime, endTime));
+                        if (isFinish1) {
+                            status += 1;
+                        }
+                        boolean isFinish2 = DownloadSimpleUtil.convert(src2, dest2, getTime(startTime, endTime));
+                        if (isFinish2) {
+                            status += 3;
+                        }
+                    } else if (videoStatus.getSTATUS() == 4) {
+                        boolean isFinish3 = DownloadSimpleUtil.convert(src3, dest3, getTime(startTime, endTime));
+                        if (isFinish3) {
+                            status += 5;
+                        }
+                    } else if (videoStatus.getSTATUS() == 6) {
+                        boolean isFinish2 = DownloadSimpleUtil.convert(src2, dest2, getTime(startTime, endTime));
+                        if (isFinish2) {
+                            status += 3;
+                        }
+                    } else if (videoStatus.getSTATUS() == 8) {
+                        boolean isFinish1 = DownloadSimpleUtil.convert(src1, dest1, getTime(startTime, endTime));
+                        if (isFinish1) {
+                            status += 1;
+                        }
                     }
 
                 } catch (Exception e) {
