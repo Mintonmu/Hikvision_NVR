@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 @Data
 @TableName(value = "trffpn_app.veh_cr_procstatus_view")
+//@TableName(value = "VEH_CR_PROCSTATUS")
 public class Video {
     @TableId(value = "LSH")
     private String LSH; // 流水号

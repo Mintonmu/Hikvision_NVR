@@ -43,8 +43,9 @@ public class VideoDownloaderScheduled {
     public void scheduled() {
         LambdaUpdateWrapper<Video> LW = new LambdaUpdateWrapper<>();
         LW
-                .ge(Video::getKSSJ, new Date(123, Calendar.JUNE, 10)).orderByDesc(Video::getKSSJ);
+                .ge(Video::getKSSJ, new Date(123, Calendar.JULY, 10)).orderByDesc(Video::getKSSJ);
         List<Video> videoList = videoMapper.selectList(LW);
+//        System.out.println(videoList.size());
         for (Video video :
                 videoList) {
             String lsh = video.getLSH();
@@ -53,10 +54,10 @@ public class VideoDownloaderScheduled {
                     .eq(VideoStatus::getLSH, video.getLSH())
                     .eq(VideoStatus::getKSSJ, video.getKSSJ()).one();
             if (videoStatus == null || videoStatus.getSTATUS() != 9) {
+//                System.out.println("download");
                 // 查询不到记录，或者记录状态为0，开始下载
                 // -------------- 下载视频
                 int status = videoStatus == null ? 0 : videoStatus.getSTATUS();
-
                 Date startTime = video.getKSSJ();
                 Date endTime = video.getXTJSSJ();
 
@@ -70,9 +71,9 @@ public class VideoDownloaderScheduled {
                     String src1 = path_pre + "/Streaming/tracks/101?starttime=" + startTimeStr + "&&endtime=" + endTimeStr;
                     String src2 = path_pre + "/Streaming/tracks/301?starttime=" + startTimeStr + "&&endtime=" + endTimeStr;
                     String src3 = path_pre + "/Streaming/tracks/501?starttime=" + startTimeStr + "&&endtime=" + endTimeStr;
-//                    String src1 = "rtsp://192.168.31.244:554/live1";
-//                    String src2 = "rtsp://192.168.31.244:554/live3";
-//                    String src3 = "rtsp://192.168.31.244:554/live5";
+//                    String src1 = "rtsp://192.168.31.174:554/live1";
+//                    String src2 = "rtsp://192.168.31.174:554/live3";
+//                    String src3 = "rtsp://192.168.31.174:554/live5";
                     String dir = environment.getProperty("nvr.home") + "\\ch-" + lsh + "-" + save_dateformat.format(startTime) + "-" + save_dateformat.format(endTime) + "\\";
                     File file = new File(dir);
                     if (!file.exists()) {
@@ -81,68 +82,71 @@ public class VideoDownloaderScheduled {
                     String dest1 = dir + "ch-1-" + save_dateformat.format(startTime) + "-" + save_dateformat.format(endTime) + ".mp4";
                     String dest2 = dir + "ch-3-" + save_dateformat.format(startTime) + "-" + save_dateformat.format(endTime) + ".mp4";
                     String dest3 = dir + "ch-5-" + save_dateformat.format(startTime) + "-" + save_dateformat.format(endTime) + ".mp4";
-
-                    if (videoStatus == null) {
-                        boolean isFinish1 = DownloadSimpleUtil.convert(src1, dest1, getTime(startTime, endTime));
-                        boolean isFinish2 = DownloadSimpleUtil.convert(src2, dest2, getTime(startTime, endTime));
-                        boolean isFinish3 = DownloadSimpleUtil.convert(src3, dest3, getTime(startTime, endTime));
-                        if (isFinish1){
-                            status+=1;
+                    boolean isFinish1 = false, isFinish2 = false, isFinish3 = false;
+                    if (videoStatus == null || 0 == status) {
+                        isFinish1 = DownloadSimpleUtil.convert(src1, dest1, getTime(startTime, endTime));
+                        isFinish2 = DownloadSimpleUtil.convert(src2, dest2, getTime(startTime, endTime));
+                        isFinish3 = DownloadSimpleUtil.convert(src3, dest3, getTime(startTime, endTime));
+                        if (isFinish1) {
+                            status += 1;
                         }
-                        if (isFinish2){
-                            status+=3;
-                        }
-                        if (isFinish3){
-                            status+=5;
-                        }
-
-                    } else if (videoStatus.getSTATUS() == 1) {
-                        boolean isFinish2 = DownloadSimpleUtil.convert(src2, dest2, getTime(startTime, endTime));
                         if (isFinish2) {
                             status += 3;
                         }
-                        boolean isFinish3 = DownloadSimpleUtil.convert(src3, dest3, getTime(startTime, endTime));
+                        if (isFinish3) {
+                            status += 5;
+                        }
+
+                    } else if (videoStatus.getSTATUS() == 1) {
+                        isFinish2 = DownloadSimpleUtil.convert(src2, dest2, getTime(startTime, endTime));
+                        if (isFinish2) {
+                            status += 3;
+                        }
+                        isFinish3 = DownloadSimpleUtil.convert(src3, dest3, getTime(startTime, endTime));
                         if (isFinish3) {
                             status += 5;
                         }
                     } else if (videoStatus.getSTATUS() == 3) {
-                        boolean isFinish1 = DownloadSimpleUtil.convert(src1, dest1, getTime(startTime, endTime));
+                        isFinish1 = DownloadSimpleUtil.convert(src1, dest1, getTime(startTime, endTime));
                         if (isFinish1) {
                             status += 1;
                         }
-                        boolean isFinish3 = DownloadSimpleUtil.convert(src3, dest3, getTime(startTime, endTime));
+                        isFinish3 = DownloadSimpleUtil.convert(src3, dest3, getTime(startTime, endTime));
                         if (isFinish3) {
                             status += 5;
                         }
                     } else if (videoStatus.getSTATUS() == 5) {
-                        boolean isFinish1 = DownloadSimpleUtil.convert(src1, dest1, getTime(startTime, endTime));
+                        isFinish1 = DownloadSimpleUtil.convert(src1, dest1, getTime(startTime, endTime));
                         if (isFinish1) {
                             status += 1;
                         }
-                        boolean isFinish2 = DownloadSimpleUtil.convert(src2, dest2, getTime(startTime, endTime));
+                        isFinish2 = DownloadSimpleUtil.convert(src2, dest2, getTime(startTime, endTime));
                         if (isFinish2) {
                             status += 3;
                         }
                     } else if (videoStatus.getSTATUS() == 4) {
-                        boolean isFinish3 = DownloadSimpleUtil.convert(src3, dest3, getTime(startTime, endTime));
+                        isFinish3 = DownloadSimpleUtil.convert(src3, dest3, getTime(startTime, endTime));
                         if (isFinish3) {
                             status += 5;
                         }
                     } else if (videoStatus.getSTATUS() == 6) {
-                        boolean isFinish2 = DownloadSimpleUtil.convert(src2, dest2, getTime(startTime, endTime));
+                        isFinish2 = DownloadSimpleUtil.convert(src2, dest2, getTime(startTime, endTime));
                         if (isFinish2) {
                             status += 3;
                         }
                     } else if (videoStatus.getSTATUS() == 8) {
-                        boolean isFinish1 = DownloadSimpleUtil.convert(src1, dest1, getTime(startTime, endTime));
+                        isFinish1 = DownloadSimpleUtil.convert(src1, dest1, getTime(startTime, endTime));
                         if (isFinish1) {
                             status += 1;
                         }
                     }
-
+//                    System.out.println(isFinish1);
+//                    System.out.println(isFinish2);
+//                    System.out.println(isFinish3);
+//                    System.out.println(status);
                 } catch (Exception e) {
 //                    System.out.println("-------------------------");
-//                    System.out.println(e);
+                    //System.out.println(e);
 //                    System.out.println("-------------------------");
 //                    e.printStackTrace();
                 }
@@ -163,7 +167,7 @@ public class VideoDownloaderScheduled {
                             .set(VideoStatus::getSTATUS, status);
                     res = statusMapper.update(null, lambdaUpdateWrapper);
                 }
-                System.out.println(res);
+//                System.out.println(res);
 
             }
         }
