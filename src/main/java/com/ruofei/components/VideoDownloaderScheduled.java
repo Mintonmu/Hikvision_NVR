@@ -43,7 +43,7 @@ public class VideoDownloaderScheduled {
     public void scheduled() {
         LambdaUpdateWrapper<Video> LW = new LambdaUpdateWrapper<>();
         LW
-                .ge(Video::getKSSJ, new Date(123, Calendar.JULY, 10)).orderByDesc(Video::getKSSJ);
+                .ge(Video::getKSSJ, new Date(123, Calendar.JULY, 10)).eq(Video::getCYQXH, environment.getProperty("nvr.CYQXH")).orderByDesc(Video::getKSSJ);
         List<Video> videoList = videoMapper.selectList(LW);
 //        System.out.println(videoList.size());
         for (Video video :

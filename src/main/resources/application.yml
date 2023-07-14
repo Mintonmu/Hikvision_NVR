@@ -4,6 +4,7 @@ nvr:
   password: hq8569678
   port: 554
   home: D:\\nvr
+  CYQXH: 371100CY0007
 spring:
   h2:
     console:
