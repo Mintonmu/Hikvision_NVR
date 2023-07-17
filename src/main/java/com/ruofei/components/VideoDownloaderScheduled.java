@@ -75,6 +75,7 @@ public class VideoDownloaderScheduled {
 //                    String src2 = "rtsp://192.168.31.174:554/live3";
 //                    String src3 = "rtsp://192.168.31.174:554/live5";
                     String dir = environment.getProperty("nvr.home") + "\\ch-" + lsh + "-" + save_dateformat.format(startTime) + "-" + save_dateformat.format(endTime) + "\\";
+                    System.out.println("save to " + dir);
                     File file = new File(dir);
                     if (!file.exists()) {
                         file.mkdir();
@@ -140,10 +141,10 @@ public class VideoDownloaderScheduled {
                             status += 1;
                         }
                     }
-//                    System.out.println(isFinish1);
-//                    System.out.println(isFinish2);
-//                    System.out.println(isFinish3);
-//                    System.out.println(status);
+                    System.out.println(isFinish1);
+                    System.out.println(isFinish2);
+                    System.out.println(isFinish3);
+                    System.out.println(status);
                 } catch (Exception e) {
 //                    System.out.println("-------------------------");
                     //System.out.println(e);
@@ -152,7 +153,7 @@ public class VideoDownloaderScheduled {
                 }
 
                 // -------------- 下载结束
-
+                System.out.println("status-------------------" + status);
 
                 //下载完成插入数据
                 int res = 0;
