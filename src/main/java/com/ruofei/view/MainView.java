@@ -24,6 +24,10 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.RequestHandler;
+import com.vaadin.flow.server.VaadinRequest;
+import com.vaadin.flow.server.VaadinResponse;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.material.Material;
 import lombok.extern.slf4j.Slf4j;
@@ -70,6 +74,33 @@ public class MainView extends VerticalLayout {
     private Timer autoUpdateInfoOnPage = new Timer();
 
     public MainView(DownloadService downloadService, EncodeService encodeService, VideoEncoderPresetRepository videoEncoderPresetRepository, VideoPresetEditor editor, VideoDownloader videoDownloader) {
+
+
+        VaadinSession.getCurrent().addRequestHandler(
+                new RequestHandler() {
+                    @Override
+                    public boolean handleRequest(VaadinSession session,
+                                                 VaadinRequest request,
+                                                 VaadinResponse response)
+                            throws IOException {
+                        if ("/rhexample".equals(request.getPathInfo())) {
+                            // Generate a plain text document
+                            response.setContentType("text/plain");
+                            response.getWriter().append(
+                                    "Here's some dynamically generated content.\n");
+                            response.getWriter().format(Locale.ENGLISH,
+                                    "Time: %Tc\n", new Date());
+
+                            // Use shared session data
+                            response.getWriter().format("Session data: %s\n",
+                                    session.getAttribute("mydata"));
+
+                            return true; // We wrote a response
+                        } else
+                            return false; // No response was written
+                    }
+                });
+
         SimpleDateFormat sdf = new SimpleDateFormat();// 格式化时间
         sdf.applyPattern("yyyy-MM-dd HH:mm:ss");// a为am/pm的标记
         Date date = new Date();// 获取当前时间
@@ -111,7 +142,7 @@ public class MainView extends VerticalLayout {
                 // 获取文件名
                 String fileName = path.getFileName().toString();
 //                String b = FileUtil.nvrHomeDir()  + "/" + fileName + "/ch-3" + fileName.substring(2)+ ".mp4";
-                video.setSource("api/media/video?path=" + "/" + fileName + "/ch-3" + fileName.substring(13) + ".mp4");
+                video.setSource("api/media/video?path=" + "/" + fileName + "/ch-4" + fileName.substring(13) + ".mp4");
                 VideoDialog videoDialog = new VideoDialog(video);
                 add(videoDialog);
             });

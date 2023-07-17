@@ -69,7 +69,7 @@ public class VideoDownloaderScheduled {
 
                     String path_pre = "rtsp://" + environment.getProperty("nvr.username") + ":" + environment.getProperty("nvr.password") + "@" + environment.getProperty("nvr.host") + ":" + environment.getProperty("nvr.port");
                     String src1 = path_pre + "/Streaming/tracks/101?starttime=" + startTimeStr + "&&endtime=" + endTimeStr;
-                    String src2 = path_pre + "/Streaming/tracks/301?starttime=" + startTimeStr + "&&endtime=" + endTimeStr;
+                    String src2 = path_pre + "/Streaming/tracks/401?starttime=" + startTimeStr + "&&endtime=" + endTimeStr;
                     String src3 = path_pre + "/Streaming/tracks/501?starttime=" + startTimeStr + "&&endtime=" + endTimeStr;
 //                    String src1 = "rtsp://192.168.31.174:554/live1";
 //                    String src2 = "rtsp://192.168.31.174:554/live3";
@@ -81,7 +81,7 @@ public class VideoDownloaderScheduled {
                         file.mkdir();
                     }
                     String dest1 = dir + "ch-1-" + save_dateformat.format(startTime) + "-" + save_dateformat.format(endTime) + ".mp4";
-                    String dest2 = dir + "ch-3-" + save_dateformat.format(startTime) + "-" + save_dateformat.format(endTime) + ".mp4";
+                    String dest2 = dir + "ch-4-" + save_dateformat.format(startTime) + "-" + save_dateformat.format(endTime) + ".mp4";
                     String dest3 = dir + "ch-5-" + save_dateformat.format(startTime) + "-" + save_dateformat.format(endTime) + ".mp4";
                     boolean isFinish1 = false, isFinish2 = false, isFinish3 = false;
                     if (videoStatus == null || 0 == status) {
