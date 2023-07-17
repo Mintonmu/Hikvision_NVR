@@ -62,7 +62,6 @@ public class MainView extends VerticalLayout {
     private final TextField startDateTime = new TextField("start datetime", "请输入开始时间");
     private final TextField endDateTime = new TextField("end datetime", "请输入结束时间");
 
-
     private final HorizontalLayout downloadParamsBar = new HorizontalLayout(nvrIpAddress, startDateTime, endDateTime, downloadBtn);
     //    private final HorizontalLayout downloadBar = new HorizontalLayout();
     private final VerticalLayout downloadVideoLayout = new VerticalLayout(downloadParamsBar, dateBar, downloadedVideoFilesGrid);

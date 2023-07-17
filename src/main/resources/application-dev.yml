@@ -1,0 +1,20 @@
+nvr:
+  host: localhost
+  username:
+  password:
+  port: 554
+  home: D:\\nvr
+  CYQXH: 371100CY0007
+spring:
+  datasource:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    url: jdbc:oracle:thin:@124.222.66.225:1521:XE
+    username: sjfxkq
+    password: Sjfxkq#Exa01
+    maxWait: 10000
+    initial-size: 10
+    max-active: 30
+    min-idle: 10
+  devtools:
+    restart:
+      enabled: false
