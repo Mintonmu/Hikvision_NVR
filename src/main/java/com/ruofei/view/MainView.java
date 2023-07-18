@@ -24,10 +24,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.RequestHandler;
-import com.vaadin.flow.server.VaadinRequest;
-import com.vaadin.flow.server.VaadinResponse;
-import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.server.*;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.material.Material;
 import lombok.extern.slf4j.Slf4j;
@@ -72,34 +69,10 @@ public class MainView extends VerticalLayout {
     Editor<DownloadedVideoFile> DownloadedVideoFileeditor = downloadedVideoFilesGrid.getEditor();
     private DownloadFileProgressListener progressListener;
     private Timer autoUpdateInfoOnPage = new Timer();
-
+    private String query;
     public MainView(DownloadService downloadService, EncodeService encodeService, VideoEncoderPresetRepository videoEncoderPresetRepository, VideoPresetEditor editor, VideoDownloader videoDownloader) {
-
-
-        VaadinSession.getCurrent().addRequestHandler(
-                new RequestHandler() {
-                    @Override
-                    public boolean handleRequest(VaadinSession session,
-                                                 VaadinRequest request,
-                                                 VaadinResponse response)
-                            throws IOException {
-                        if ("/rhexample".equals(request.getPathInfo())) {
-                            // Generate a plain text document
-                            response.setContentType("text/plain");
-                            response.getWriter().append(
-                                    "Here's some dynamically generated content.\n");
-                            response.getWriter().format(Locale.ENGLISH,
-                                    "Time: %Tc\n", new Date());
-
-                            // Use shared session data
-                            response.getWriter().format("Session data: %s\n",
-                                    session.getAttribute("mydata"));
-
-                            return true; // We wrote a response
-                        } else
-                            return false; // No response was written
-                    }
-                });
+        VaadinRequest request = VaadinService.getCurrentRequest();
+         query = request.getParameter("lsh");
 
         SimpleDateFormat sdf = new SimpleDateFormat();// 格式化时间
         sdf.applyPattern("yyyy-MM-dd HH:mm:ss");// a为am/pm的标记
@@ -119,13 +92,13 @@ public class MainView extends VerticalLayout {
             frontbtn.addClickListener(e -> {
                 //TODO:完成按钮响应事件
                 Video video = new Video();
-                video.setWidth("500px");
+                video.setWidth("700px");
                 video.setControls(true);
                 Path path = Paths.get(p.getFileName());
                 // 获取文件名
                 String fileName = path.getFileName().toString();
 //                String b = FileUtil.nvrHomeDir()  + "/" + fileName + "/ch-1" + fileName.substring(2)+ ".mp4";
-                video.setSource("api/media/video?path=" + "/" + fileName + "/ch-1" + fileName.substring(13) + ".mp4");
+                video.setSource("api/media/video?path=" + "/" + fileName + "/ch-1" + fileName.substring(16) + ".mp4");
                 VideoDialog videoDialog = new VideoDialog(video);
                 add(videoDialog);
             });
@@ -136,13 +109,13 @@ public class MainView extends VerticalLayout {
             backbtn.addClickListener(e -> {
                 //TODO:完成按钮响应事件
                 Video video = new Video();
-                video.setWidth("500px");
+                video.setWidth("700px");
                 video.setControls(true);
                 Path path = Paths.get(p.getFileName());
                 // 获取文件名
                 String fileName = path.getFileName().toString();
 //                String b = FileUtil.nvrHomeDir()  + "/" + fileName + "/ch-3" + fileName.substring(2)+ ".mp4";
-                video.setSource("api/media/video?path=" + "/" + fileName + "/ch-4" + fileName.substring(13) + ".mp4");
+                video.setSource("api/media/video?path=" + "/" + fileName + "/ch-4" + fileName.substring(16) + ".mp4");
                 VideoDialog videoDialog = new VideoDialog(video);
                 add(videoDialog);
             });
@@ -153,13 +126,13 @@ public class MainView extends VerticalLayout {
             movebtn.addClickListener(e -> {
                 //TODO:完成按钮响应事件
                 Video video = new Video();
-                video.setWidth("500px");
+                video.setWidth("700px");
                 video.setControls(true);
                 Path path = Paths.get(p.getFileName());
                 // 获取文件名
                 String fileName = path.getFileName().toString();
 //                String b = FileUtil.nvrHomeDir()  + "/" + fileName + "/ch-5" + fileName.substring(2)+ ".mp4";
-                video.setSource("api/media/video?path=" + "/" + fileName + "/ch-5" + fileName.substring(13) + ".mp4");
+                video.setSource("api/media/video?path=" + "/" + fileName + "/ch-5" + fileName.substring(16) + ".mp4");
                 VideoDialog videoDialog = new VideoDialog(video);
                 add(videoDialog);
             });
@@ -230,9 +203,11 @@ public class MainView extends VerticalLayout {
                     return !entry.toString().endsWith(".DS_Store");
                 }
             }).forEach(file -> {
-                DownloadedVideoFile item = new DownloadedVideoFile();
-                item.setFileName(file.toFile().getAbsolutePath());
-                items.add(item);
+                if (!"".equals(query) && file.toFile().getAbsolutePath().contains(query.trim())) {
+                    DownloadedVideoFile item = new DownloadedVideoFile();
+                    item.setFileName(file.toFile().getAbsolutePath());
+                    items.add(item);
+                }
             });
         } catch (IOException e) {
             e.printStackTrace();

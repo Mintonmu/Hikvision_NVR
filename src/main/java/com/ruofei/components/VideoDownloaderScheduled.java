@@ -87,7 +87,7 @@ public class VideoDownloaderScheduled {
                     if (videoStatus == null || 0 == status) {
                         isFinish1 = DownloadSimpleUtil.convert(src1, dest1, getTime(startTime, endTime));
                         isFinish2 = DownloadSimpleUtil.convert(src2, dest2, getTime(startTime, endTime));
-                        isFinish3 = DownloadSimpleUtil.convert(src3, dest3, getTime(startTime, endTime));
+                        isFinish3 = DownloadSimpleUtil.convert2(src3, dest3, getTime(startTime, endTime));
                         if (isFinish1) {
                             status += 1;
                         }
@@ -103,7 +103,7 @@ public class VideoDownloaderScheduled {
                         if (isFinish2) {
                             status += 3;
                         }
-                        isFinish3 = DownloadSimpleUtil.convert(src3, dest3, getTime(startTime, endTime));
+                        isFinish3 = DownloadSimpleUtil.convert2(src3, dest3, getTime(startTime, endTime));
                         if (isFinish3) {
                             status += 5;
                         }
@@ -112,7 +112,7 @@ public class VideoDownloaderScheduled {
                         if (isFinish1) {
                             status += 1;
                         }
-                        isFinish3 = DownloadSimpleUtil.convert(src3, dest3, getTime(startTime, endTime));
+                        isFinish3 = DownloadSimpleUtil.convert2(src3, dest3, getTime(startTime, endTime));
                         if (isFinish3) {
                             status += 5;
                         }
@@ -126,7 +126,7 @@ public class VideoDownloaderScheduled {
                             status += 3;
                         }
                     } else if (videoStatus.getSTATUS() == 4) {
-                        isFinish3 = DownloadSimpleUtil.convert(src3, dest3, getTime(startTime, endTime));
+                        isFinish3 = DownloadSimpleUtil.convert2(src3, dest3, getTime(startTime, endTime));
                         if (isFinish3) {
                             status += 5;
                         }

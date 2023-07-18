@@ -51,6 +51,47 @@ public class DownloadSimpleUtil implements Runnable {
         return twffIn.isFinish || twffInErr.isFinish;
     }
 
+    public static boolean convert2(String src, String dest, long secs) throws Exception {
+
+        String ffcmdpath = "cmd /c ffmpeg -reorder_queue_size 0 -timeout 5";
+        StringBuilder cmd = new StringBuilder();
+        cmd.append(ffcmdpath)
+                .append(" -rtsp_transport tcp ") // 使用tcp的命令，默认是udp
+                .append(" -i ")
+                .append(" \"")
+                .append(src)
+                .append("\"")
+                .append(" -f m4v ")
+                .append(" -vcodec copy ")
+                .append(" -y ") // 覆盖
+                .append(dest + "_tmp")
+                .append(" && ffmpeg -i ")
+                .append(dest + "_tmp")
+                .append(" -vcodec copy ")
+                .append(" -y ")
+                .append(dest)
+                .append(" && ")
+                .append(" del/f/s/q ")
+                .append(dest + "_tmp");
+
+        System.out.println(cmd);
+        Process process = Runtime.getRuntime().exec(cmd.toString());
+        // 输出内容
+        DownloadSimpleUtil twffIn = new DownloadSimpleUtil(process, process.getInputStream(), secs);
+        DownloadSimpleUtil twffInErr = new DownloadSimpleUtil(process, process.getErrorStream(), secs);
+        Thread t = new Thread(twffIn);
+        Thread t1 = new Thread(twffInErr);
+        t.start();
+        t1.start();
+
+        process.waitFor(); // 一定要配合2个 inputstream ，要不然会一直阻塞
+        twffIn.setStop(true);
+        twffInErr.setStop(true); // 停止 线程
+
+        return twffIn.isFinish || twffInErr.isFinish;
+    }
+
+
     public void setStop(boolean stop) {
         this.stop = stop;
     }
@@ -63,7 +104,7 @@ public class DownloadSimpleUtil implements Runnable {
             if (scanner.hasNext()) {
                 String s = scanner.nextLine();
                 System.out.println(s);
-                if (s.contains("Qavg:")){
+                if (s.contains("Qavg:") || s.contains("删除文件")) {
                     stop = true;
                     isFinish = true;
                     break;

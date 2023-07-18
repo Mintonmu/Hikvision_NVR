@@ -17,7 +17,7 @@ spring:
     restart:
       enabled: false
   profiles:
-    active: dev
+    active: prod
 
 
 #mybatis-plus:
