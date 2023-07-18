@@ -27,8 +27,8 @@ public class VideoDownloaderScheduled {
     private VideoMapper videoMapper;
     @Autowired
     private VideoStatusMapper statusMapper;
-    private DateFormat dateformat = new SimpleDateFormat("yyyyMMdd'T'hhmmssX");
-    private DateFormat save_dateformat = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
+    private DateFormat dateformat = new SimpleDateFormat("yyyyMMdd'T'HHmmssX");
+    private DateFormat save_dateformat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
     @Autowired
     private Environment environment;
 
